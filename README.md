@@ -24,18 +24,37 @@ This repository comes with the following packages already configured:
 Your repository includes a starter book inventory in `server.js`:
 ```javascript
 const books = [
-  { id: 1, title: "The Great Gatsby", author: "F. Scott Fitzgerald", year: 1925, genre: "Fiction" },
-  { id: 2, title: "To Kill a Mockingbird", author: "Harper Lee", year: 1960, genre: "Fiction" },
-  { id: 3, title: "1984", author: "George Orwell", year: 1949, genre: "Dystopian Fiction" }
+  { id: 1, title: "The Great Gatsby", author: "F. Scott Fitzgerald", genre: "Fiction", copiesAvailable: 5 },
+  { id: 2, title: "To Kill a Mockingbird", author: "Harper Lee", genre: "Fiction", copiesAvailable: 3 },
+  { id: 3, title: "1984", author: "George Orwell", genre: "Dystopian Fiction", copiesAvailable: 7 }
 ];
 ```
 
-## API Endpoints to Implement
-- `GET /api/books` - Retrieve all books
-- `GET /api/books/:id` - Retrieve a specific book by ID
-- `POST /api/books` - Add a new book
-- `PUT /api/books/:id` - Update an existing book
-- `DELETE /api/books/:id` - Remove a book
+## API Endpoints
+| Method | Endpoint | Description | Success | Errors |
+| ------ | -------- | ----------- | ------- | ------ |
+| GET | `/api/books` | Retrieve all books | 200 | |
+| GET | `/api/books?search=term` | Search books by title or author | 200 | |
+| GET | `/api/books/:id` | Retrieve a specific book by ID | 200 | 404 |
+| POST | `/api/books` | Add a new book (`title` and `author` required) | 201 | 400 |
+| PUT | `/api/books/:id` | Update an existing book | 200 | 404 |
+| DELETE | `/api/books/:id` | Remove a book | 200 | 404 |
+
+### Example requests
+```bash
+# Create a book
+curl -X POST http://localhost:3000/api/books \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Dune", "author": "Frank Herbert", "genre": "Science Fiction", "copiesAvailable": 4}'
+
+# Update copies available
+curl -X PUT http://localhost:3000/api/books/1 \
+  -H "Content-Type: application/json" \
+  -d '{"copiesAvailable": 8}'
+
+# Delete a book
+curl -X DELETE http://localhost:3000/api/books/1
+```
 
 ## Running the Server
 Start your development server:
@@ -58,6 +77,10 @@ tests/
 package.json
 README.md
 ```
+
+## Notes
+- Data is stored in memory, so it resets whenever the server restarts.
+- IDs come from an incrementing counter, so they are never reused after a delete.
 
 ## Key Learning Objectives
 - Build RESTful APIs using Express.js with proper HTTP methods
